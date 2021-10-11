@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-10-11T11:40:12Z</date>
+    <date>2021-10-11T19:17:34Z</date>
     <groups>
         <group>
             <name>Discovered hosts</name>
@@ -79,6 +79,24 @@
                                     <name>DHCP Info</name>
                                 </application>
                             </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;=80</expression>
+                                    <name>DHCP Pool ({#POOL}) UTILIZATION &gt;80% on {HOST.NAME}</name>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>DHCP Pool ({#POOL}) UTILIZATION &gt;90% on {HOST.NAME}</name>
+                                            <expression>{Monitoreo Fortinet DHCP:dhcpUtil[{#POOL}].last()}&gt;=90</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;=90</expression>
+                                    <name>DHCP Pool ({#POOL}) UTILIZATION &gt;90% on {HOST.NAME}</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
                         </item_prototype>
                     </item_prototypes>
                 </discovery_rule>
