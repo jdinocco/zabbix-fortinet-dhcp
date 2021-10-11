@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-10-11T11:40:12Z</date>
+    <groups>
+        <group>
+            <name>Discovered hosts</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Firewall Fortinet DHCP</template>
+            <name>Template Firewall Fortinet DHCP</name>
+            <description>Develop by Julio Dinocco (https://github.com/jdinocco)</description>
+            <groups>
+                <group>
+                    <name>Discovered hosts</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>DHCP Info</name>
+                </application>
+                <application>
+                    <name>DHCP Raw Info</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>DHCP Raw</name>
+                    <type>EXTERNAL</type>
+                    <key>fortinet-dhcp.py[&quot;lease&quot;,&quot;{HOST.CONN}&quot;,&quot;{$FWUSER}&quot;,&quot;{$FWPASS}&quot;]</key>
+                    <delay>5m</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>DHCP Raw Info</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>DHCP Pool Discover</name>
+                    <type>EXTERNAL</type>
+                    <key>fortinet-dhcp.py[&quot;discover&quot;,&quot;{HOST.CONN}&quot;,&quot;{$FWUSER}&quot;,&quot;{$FWPASS}&quot;]</key>
+                    <delay>1h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>DHCP Pool {#POOL} ({#NET}) Lease</name>
+                            <type>DEPENDENT</type>
+                            <key>dhcpLease[{#POOL}]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>DHCP Info</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.{#POOL}</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>fortinet-dhcp.py[&quot;lease&quot;,&quot;{HOST.CONN}&quot;,&quot;{$FWUSER}&quot;,&quot;{$FWPASS}&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>DHCP Pool {#POOL} ({#NET}) Utilzation</name>
+                            <type>CALCULATED</type>
+                            <key>dhcpUtil[{#POOL}]</key>
+                            <delay>5m</delay>
+                            <units>%</units>
+                            <params>100*last(&quot;dhcpLease[{#POOL}]&quot;)/{#TOTAL}</params>
+                            <applications>
+                                <application>
+                                    <name>DHCP Info</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$FWPASS}</macro>
+                    <type>SECRET_TEXT</type>
+                </macro>
+                <macro>
+                    <macro>{$FWUSER}</macro>
+                    <value>monitoreoreadonly</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
