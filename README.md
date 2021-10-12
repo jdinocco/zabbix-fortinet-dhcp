@@ -17,7 +17,7 @@ Zabbix template for monitoring the DHCP pools utilization.
 
 ## Features
 
-- Using Python in Discovery for parsing the pool name, from address and netmask of the interface vlan get the network and total available hosts
+- Using Python in Discovery for parsing the pool name and from address and netmask of the interface vlan get the network and total available hosts
 - Using JSONPath for Raw data extraction
 
 ## Requirements
